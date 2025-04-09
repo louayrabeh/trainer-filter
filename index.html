@@ -2,13 +2,14 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fiches Formateurs JCI</title>
   <!-- Materialize CSS & Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=El+Messiri:wght@400..700&family=Zain:wght@200;300;400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=El+Messiri:wght@400..700&family=Zain:wght@200;300;400;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -30,25 +31,49 @@
       color: #000 !important;
     }
     .logos {
+      display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
+      flex-wrap: wrap;
     }
     .logo-placeholder {
       width: 150px !important;
+      margin-bottom: 20px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .logo-placeholder {
+        width: 120px !important;
+      }
+      .search-bar input {
+        width: 100% !important;
+      }
+      .search-bar label {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-placeholder {
+        width: 100px !important;
+      }
+      .header-color {
+        font-size: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-  <div class="logos row">
-      <img src="JCI-Tunisie.png"class="logo-placeholder col s12 l4" alt="" srcset="">
-      <img src="logo_we_can_make_it-01.png"class="logo-placeholder col s12 l4" alt="" srcset="">
+    <div class="logos row">
+      <img src="JCI-Tunisie.png" class="logo-placeholder col s12 l4" alt="" srcset="">
+      <img src="logo_we_can_make_it-01.png" class="logo-placeholder col s12 l4" alt="" srcset="">
       <img src="taba3ni.png" class="logo-placeholder col s12 l4" alt="" srcset="">
     </div>
     <h4 class="center header-color" style="font-family: Cairo; font-weight: 900;">Fiches Formateurs JCI Tunisie</h4>
-
 
     <div class="input-field search-bar">
       <i class="material-icons prefix black-text">search</i>
