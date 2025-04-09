@@ -34,7 +34,6 @@
       margin-bottom: 20px;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 768px) {
       .logo-placeholder {
         width: 120px !important;
@@ -58,12 +57,11 @@
   </style>
 </head>
 <body>
-
   <div class="container">
     <div class="logos row center" style="width: 100%;">
-      <img src="JCI-Tunisie.png" class="logo-placeholder col s12 l4" alt="" srcset="">
-      <img src="logo_we_can_make_it-01.png" class="logo-placeholder col s12 l4" alt="" srcset="">
-      <img src="taba3ni.png" style="width: 90px !important;" class="logo-placeholder col s12 l4" alt="" srcset="">
+      <img src="JCI-Tunisie.png" class="logo-placeholder col s12 l4" alt="">
+      <img src="logo_we_can_make_it-01.png" class="logo-placeholder col s12 l4" alt="">
+      <img src="taba3ni.png" style="width: 90px !important;" class="logo-placeholder col s12 l4" alt="">
     </div>
     <h4 class="center header-color" style="font-family: Cairo; font-weight: 900;">Fiches Formateurs JCI Tunisie</h4>
 
@@ -88,14 +86,15 @@
       const json = JSON.parse(text.substring(47).slice(0, -2));
       const headers = json.table.cols.map(col => col.label.trim());
 
-      const nameIndex = headers.findIndex(h => h.toLowerCase().includes("nom et prénom"));
+      const trainerNameIndex = headers.findIndex(h => h.toLowerCase().includes("formateur"));
       const domainesIndex = headers.findIndex(h => h.toLowerCase().includes("domaines"));
       const sessionsIndex = headers.findIndex(h => h.toLowerCase().includes("session"));
       const emailIndex = headers.findIndex(h => h.toLowerCase().includes("email"));
       const phoneIndex = headers.findIndex(h => h.toLowerCase().includes("téléphone"));
       const orgIndex = headers.findIndex(h => h.toLowerCase().includes("organisation"));
       const publicIndex = headers.findIndex(h => h.toLowerCase().includes("public"));
-      const totIndex = headers.findIndex(h => h.toLowerCase().includes("tot"));
+      const totIndex = headers.findIndex(h => h.toLowerCase().includes("certifié tot"));
+      const intronisationIndex = headers.findIndex(h => h.toLowerCase().includes("intronisation"));
 
       const container = document.getElementById("cards");
       container.innerHTML = "";
@@ -103,7 +102,7 @@
 
       json.table.rows.forEach(row => {
         const cells = row.c;
-        const name = cells[nameIndex]?.v || "—";
+        const trainerName = cells[trainerNameIndex]?.v || "—";
         const domaines = cells[domainesIndex]?.v || "—";
         const sessions = cells[sessionsIndex]?.v || "—";
         const email = cells[emailIndex]?.v || "—";
@@ -111,15 +110,17 @@
         const org = cells[orgIndex]?.v || "—";
         const publicTarget = cells[publicIndex]?.v || "—";
         const tot = cells[totIndex]?.v || "—";
+        const intronisation = cells[intronisationIndex]?.v || "—";
 
         const html = `
           <div class="col s12">
             <div class="card z-depth-2">
               <div class="card-content">
-                <span class="card-title"><i class="material-icons left">person</i>${name}</span>
+                <span class="card-title"><i class="material-icons left">person</i>${trainerName}</span>
                 <p><b>Email :</b> ${email}</p>
                 <p><b>Téléphone :</b> ${phone}</p>
                 <p><b>Organisation :</b> ${org}</p>
+                <p><b>Année d'intronisation :</b> ${intronisation}</p>
                 <p><b>Domaines :</b> ${domaines}</p>
                 <p><b>Sessions JCI :</b> ${sessions}</p>
                 <p><b>Public cible :</b> ${publicTarget}</p>
@@ -131,9 +132,10 @@
 
         cardsData.push({
           html,
-          name: name.toLowerCase(),
+          name: trainerName.toLowerCase(),
           sessions: sessions.toLowerCase(),
-          domaines: domaines.toLowerCase()
+          domaines: domaines.toLowerCase(),
+          tot: tot.toLowerCase()
         });
       });
 
@@ -154,7 +156,7 @@
         renderCards(input.value.toLowerCase());
       });
 
-      renderCards(); // Initial display
+      renderCards();
     }
 
     window.onload = fetchData;
