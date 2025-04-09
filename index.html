@@ -3,42 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <title>Fiches Formateurs JCI</title>
+  <!-- Materialize CSS & Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
   <style>
     body {
-      font-family: Arial, sans-serif;
       background: #f0f2f5;
       padding: 20px;
     }
-    #searchInput {
-      margin-bottom: 20px;
-      padding: 10px;
-      width: 100%;
-      max-width: 400px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+    .card-content p {
+      margin: 5px 0;
     }
-    .card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      background: #ffffff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      max-width: 600px;
+    .search-bar {
+      margin-bottom: 30px;
     }
-    .highlight {
-      background-color: #ffffcc;
+    .header-color {
+      color: #0097d7;
+    }
+    .btn-custom {
+      background-color: #edbd27 !important;
+      color: #000 !important;
+    }
+    .logos {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Fiches Formateurs JCI</h1>
-  <input type="text" id="searchInput" placeholder="Rechercher par nom, session ou domaine de formation">
+  <div class="container">
+  <div class="logos">
+      <div class="logo-placeholder"><img src="JCI-Tunisie.png" alt="" srcset=""></div>
+      <div class="logo-placeholder"><img src="logo_we_can_make_it-01.png" alt="" srcset=""></div>
+      <div class="logo-placeholder"><img src="taba3ni.png" alt="" srcset=""></div>
+    </div>
+    <h4 class="center header-color">Fiches Formateurs JCI Tunisie</h4>
 
-  <div id="cards"></div>
 
+    <div class="input-field search-bar">
+      <i class="material-icons prefix black-text">search</i>
+      <input id="searchInput" type="text" class="validate">
+      <label for="searchInput">Rechercher par nom, domaine ou session</label>
+    </div>
+
+    <div id="cards" class="row"></div>
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>
     async function fetchData() {
       const sheetId = '1BsWqxe-softpUYlAaCDj8bh-GezzM2hFvqog7rFVjRg';
@@ -49,19 +65,17 @@
       const json = JSON.parse(text.substring(47).slice(0, -2));
       const headers = json.table.cols.map(col => col.label.trim());
 
-      // Identify relevant columns
       const nameIndex = headers.findIndex(h => h.toLowerCase().includes("nom et prénom"));
-      const domainesIndex = headers.findIndex(h => h.toLowerCase().includes("domaines de formation"));
-      const sessionsIndex = headers.findIndex(h => h.toLowerCase().includes("sessions"));
+      const domainesIndex = headers.findIndex(h => h.toLowerCase().includes("domaines"));
+      const sessionsIndex = headers.findIndex(h => h.toLowerCase().includes("session"));
       const emailIndex = headers.findIndex(h => h.toLowerCase().includes("email"));
       const phoneIndex = headers.findIndex(h => h.toLowerCase().includes("téléphone"));
       const orgIndex = headers.findIndex(h => h.toLowerCase().includes("organisation"));
-      const publicIndex = headers.findIndex(h => h.toLowerCase().includes("public cible"));
-      const totIndex = headers.findIndex(h => h.toLowerCase().includes("certifié tot"));
+      const publicIndex = headers.findIndex(h => h.toLowerCase().includes("public"));
+      const totIndex = headers.findIndex(h => h.toLowerCase().includes("tot"));
 
       const container = document.getElementById("cards");
       container.innerHTML = "";
-
       const cardsData = [];
 
       json.table.rows.forEach(row => {
@@ -75,38 +89,52 @@
         const publicTarget = cells[publicIndex]?.v || "—";
         const tot = cells[totIndex]?.v || "—";
 
-        const cardHTML = `
-          <div class="card" data-name="${name.toLowerCase()}" data-session="${sessions.toLowerCase()}">
-            <h3>${name}</h3>
-            📧 <b>Email :</b> ${email}<br>
-            📱 <b>Téléphone :</b> ${phone}<br>
-            🏛️ <b>Organisation :</b> ${org}<br>
-            🎓 <b>Domaines :</b> ${domaines}<br>
-            🎤 <b>Sessions JCI :</b> ${sessions}<br>
-            👥 <b>Public cible :</b> ${publicTarget}<br>
-            ✅ <b>Certifié TOT :</b> ${tot}
+        const html = `
+          <div class="col s12">
+            <div class="card z-depth-2">
+              <div class="card-content">
+                <span class="card-title"><i class="material-icons left">person</i>${name}</span>
+                <p><b>Email :</b> ${email}</p>
+                <p><b>Téléphone :</b> ${phone}</p>
+                <p><b>Organisation :</b> ${org}</p>
+                <p><b>Domaines :</b> ${domaines}</p>
+                <p><b>Sessions JCI :</b> ${sessions}</p>
+                <p><b>Public cible :</b> ${publicTarget}</p>
+                <p><b>Certifié TOT :</b> ${tot}</p>
+              </div>
+            </div>
           </div>
         `;
 
-        cardsData.push({ html: cardHTML, name: name.toLowerCase(), sessions: sessions.toLowerCase() });
+        cardsData.push({
+          html,
+          name: name.toLowerCase(),
+          sessions: sessions.toLowerCase(),
+          domaines: domaines.toLowerCase()
+        });
       });
 
-      // Display all cards initially
-      cardsData.forEach(c => container.innerHTML += c.html);
-
-      // Live search filter
       const input = document.getElementById("searchInput");
-      input.addEventListener("input", () => {
-        const val = input.value.toLowerCase();
+
+      function renderCards(filterText = "") {
         container.innerHTML = "";
         cardsData
-          .filter(c => c.name.includes(val) || c.sessions.includes(val))
+          .filter(c =>
+            c.name.includes(filterText) ||
+            c.sessions.includes(filterText) ||
+            c.domaines.includes(filterText)
+          )
           .forEach(c => container.innerHTML += c.html);
+      }
+
+      input.addEventListener("input", () => {
+        renderCards(input.value.toLowerCase());
       });
+
+      renderCards(); // Initial display
     }
 
     window.onload = fetchData;
   </script>
-
 </body>
 </html>
